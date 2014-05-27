@@ -1,0 +1,60 @@
+{
+    "props": {
+        "foo": 42,
+        "bar": 43
+    },
+
+    "libs": {
+        "appearances": [
+            {
+                "id": "brick",
+                "material": {
+                    "color": {
+                        "r": .1,
+                        "g": 0.2
+                    }
+                },
+                "textures": [
+                    {
+                    }
+                ]
+            }
+        ]
+    },
+
+    "objects": [
+        {
+            "id": "foo",
+            "appearance": {
+                "material": {
+                    "color": {
+                        "r": .1,
+                        "g": 0.2
+                    }
+                }
+            },
+            "texture": "brick"
+        },
+        {
+            "id": "bar",
+            "appearance": "brick",
+            "objects": [
+                {
+                    "id": "baz",
+                    "pos": [100, 0, 0],
+                    "scale": [1.2, 1, 1],
+                    "geometry": "box"
+                }
+            ]
+        }
+    ],
+
+    "camera": {
+        "eye": [0, 0, 1000 ],
+        "look": [0, 0, 0 ]
+    },
+
+    "boot": [
+        "boot.js"
+    ]
+}

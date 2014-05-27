@@ -1,0 +1,44 @@
+{
+    "libs": {
+        "appearance": [
+            {
+                "id": "brick",
+                "type": "appearance",
+                "material": {
+                },
+                "textures": [
+                ]
+            }
+        ],
+        "geometry": [
+            {
+                "id": "wall",
+                "type": "geometry"
+
+            }
+        ]
+    },
+
+    "objects": [
+        {
+            "id": "foo"
+        },
+        {
+            "id": "bar",
+            "appearance": "brick",
+
+            "objects": [
+                {
+                    "id": "baz",
+                    "pos": [0, 23, 100],
+                    "geometry": "wall"
+                }
+            ]
+        }
+    ],
+
+    "camera": {
+        "eye": [0, 0, 1000 ],
+        "look": [0, 0, 0 ]
+    }
+}
