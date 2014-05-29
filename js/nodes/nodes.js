@@ -1,4 +1,4 @@
-Njn.Scene = function (engine, cfg) {
+Njn.Nodes = function (engine, cfg) {
 
     cfg = cfg || {};
 
@@ -237,14 +237,7 @@ Njn.Scene = function (engine, cfg) {
      * @type {SceneJS.Node}
      */
     this.view = this.scene.getNode("__view");
-
-    var self = this;
-
-    // Publish ticks from the scene graph
-    this.scene.on("tick", function(params) {
-        self.set("tick", params, true);
-    });
 };
 
 
-Njn._extend(Njn.Scene, Njn.Component);
+Njn._extend(Njn.Nodes, Njn.Component);

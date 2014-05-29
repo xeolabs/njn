@@ -7,6 +7,7 @@
     <script src="lib/require.js"></script>
     <script src="lib/scenejs/scenejs.js"></script>
     <script src="lib/scenejs/scenejs.conf.js"></script>
+    <script src="lib/jquery.min.js"></script>
 
     <!-- Core -->
     <script src="js/ngin.js"></script>
@@ -27,7 +28,7 @@
     <script src="js/log/log.js"></script>
 
     <!-- Wraps a SceneJS scene graph -->
-    <script src="js/scene/scene.js"></script>
+    <script src="js/nodes/nodes.js"></script>
 
     <!-- Asset libraries -->
     <script src="js/libs/libs.js"></script>
@@ -51,6 +52,9 @@
 
     <!-- Picking -->
     <script src="js/pick/pick.js"></script>
+
+    <!-- Input -->
+    <script src="js/input/input.js"></script>
 
 </head>
 <body>
@@ -110,6 +114,26 @@ engine.tasks.on("failed", function (task) {
 // Start and complete a task
 var task = engine.tasks.start({ description: "foo" });
 task.complete();
+
+
+//-----------------------------------------------------------------------
+// Add a node directly to either the "library", "sky", "view" or
+// "world" branches of the engine's core SceneJS scene graph
+//-----------------------------------------------------------------------
+//engine.nodes.sky.addNodes([
+//    {
+//        "type": "objects/skyboxes/stormyNight"
+//    },
+//    {
+//        "type": "objects/grounds/grass"
+//    }
+//]);
+//
+//engine.nodes.view.addNodes([
+//    {
+//        "type": "hud/hud1"
+//    }
+//]);
 
 
 //-----------------------------------------------------------------------
@@ -231,7 +255,7 @@ myObject.on("pick", function (hit) {
 // Rotate the object on each engine tick
 var a = 0;
 engine.on("tick", function () {
-    engine.objects.objects["myBox"].setAngle(a += 1.0);
+    //engine.objects.objects["myBox"].setAngle(a += 1.0);
 });
 
 
@@ -264,7 +288,6 @@ engine.camera.set("up", [0, 1, 0]);
 engine.camera.set("look", [0, 0, 0]);
 
 
-
 //-----------------------------------------------------------------------
 // Picking
 //-----------------------------------------------------------------------
@@ -282,94 +305,114 @@ engine.pick.pick(100, 234, true); // Do a 3D ray-pick
 // This is essentially what we've done above, but as a module.
 // You can have multiple modules - often you would have one module defining asset libraries,
 // and other modules containing objects which reference those assets.
-var myModule = engine.modules.create({
-    "id": "myModule",
-    "libs": {
-        "appearance": [
-            {
-                "id": "red",
-                "type": "appearance",
-                "material": {
-                    "color": [1, 0, 0]
+//var myModule = engine.modules.create({
+//    "id": "myModule",
+//    "libs": {
+//        "appearance": [
+//            {
+//                "id": "red",
+//                "type": "appearance",
+//                "material": {
+//                    "color": [1, 0, 0]
+//                }
+//            }
+//        ],
+//        "geometry": [
+//            {
+//                "id": "box",
+//                "primitive": "triangles",
+//                "positions": [
+//                    1, 1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1,
+//                    1, 1, 1, 1, -1, 1, 1, -1, -1, 1, 1, -1,
+//                    1, 1, 1, 1, 1, -1, -1, 1, -1, -1, 1, 1,
+//                    -1, 1, 1, -1, 1, -1, -1, -1, -1, -1, -1, 1,
+//                    -1, -1, -1, 1, -1, -1, 1, -1, 1, -1, -1, 1,
+//                    1, -1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1
+//                ],
+//                "normals": [
+//                    0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+//                    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+//                    0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
+//                    -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
+//                    0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0,
+//                    0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1
+//                ],
+//                "uv": [
+//                    1, 1, 0, 1, 0, 0, 1, 0,
+//                    0, 1, 0, 0, 1, 0, 1, 1,
+//                    1, 0, 1, 1, 0, 1, 0, 0,
+//                    1, 1, 0, 1, 0, 0, 1, 0,
+//                    0, 0, 1, 0, 1, 1, 0, 1,
+//                    0, 0, 1, 0, 1, 1, 0, 1
+//                ],
+//                "indices": [
+//                    0, 1, 2, 0, 2, 3,
+//                    4, 5, 6, 4, 6, 7,
+//                    8, 9, 10, 8, 10, 11,
+//                    12, 13, 14, 12, 14, 15,
+//                    16, 17, 18, 16, 18, 19,
+//                    20, 21, 22, 20, 22, 23
+//                ]
+//            }
+//        ]
+//    },
+//
+//    "objects": [
+//        {
+//            "id": "myColor",
+//            "appearance": "red",
+//            "objects": [
+//                {
+//                    "id": "myBox",
+//                    axis: [1, 1, 0],
+//                    angle: 0,
+//                    scale: [2, 2, 2],
+//                    pos: [10, 0, 0],
+//                    "geometry": "box"
+//                }
+//            ]
+//        }
+//    ],
+//
+//    "camera": {
+//        "eye": [0, 0, 1000 ],
+//        "look": [0, 0, 0 ]
+//    }
+//});
+//
+//// Subscribe to content module creation
+//engine.modules.on("created", function (module) {
+//    console.log("Module created: '" + module.id + "'");
+//});
+//
+//// Subscribe to content module destruction
+//myModule.on("destroyed", function () {
+//    console.log("Module destroyed: '" + this.id + "'");
+//});
+//
+//// Destroy the module
+//myModule.destroy();
+
+
+var yaw = 0;
+
+engine.on("tick",
+        function () {
+
+            var left = engine.input.keyDown[engine.input.KEY_LEFT_ARROW];
+            var right = engine.input.keyDown[engine.input.KEY_RIGHT_ARROW];
+
+            if (left || right) {
+
+                if (right) {
+                    yaw += 0.3;
+                } else if (left) {
+                    yaw -= 0.3;
                 }
+
+                engine.objects.objects["myBox"].setAngle(yaw);
             }
-        ],
-        "geometry": [
-            {
-                "id": "box",
-                "primitive": "triangles",
-                "positions": [
-                    1, 1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1,
-                    1, 1, 1, 1, -1, 1, 1, -1, -1, 1, 1, -1,
-                    1, 1, 1, 1, 1, -1, -1, 1, -1, -1, 1, 1,
-                    -1, 1, 1, -1, 1, -1, -1, -1, -1, -1, -1, 1,
-                    -1, -1, -1, 1, -1, -1, 1, -1, 1, -1, -1, 1,
-                    1, -1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1
-                ],
-                "normals": [
-                    0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-                    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
-                    0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
-                    -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
-                    0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0,
-                    0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1
-                ],
-                "uv": [
-                    1, 1, 0, 1, 0, 0, 1, 0,
-                    0, 1, 0, 0, 1, 0, 1, 1,
-                    1, 0, 1, 1, 0, 1, 0, 0,
-                    1, 1, 0, 1, 0, 0, 1, 0,
-                    0, 0, 1, 0, 1, 1, 0, 1,
-                    0, 0, 1, 0, 1, 1, 0, 1
-                ],
-                "indices": [
-                    0, 1, 2, 0, 2, 3,
-                    4, 5, 6, 4, 6, 7,
-                    8, 9, 10, 8, 10, 11,
-                    12, 13, 14, 12, 14, 15,
-                    16, 17, 18, 16, 18, 19,
-                    20, 21, 22, 20, 22, 23
-                ]
-            }
-        ]
-    },
-
-    "objects": [
-        {
-            "id": "myColor",
-            "appearance": "red",
-            "objects": [
-                {
-                    "id": "myBox",
-                    axis: [1, 1, 0],
-                    angle: 0,
-                    scale: [2, 2, 2],
-                    pos: [10, 0, 0],
-                    "geometry": "box"
-                }
-            ]
-        }
-    ],
-
-    "camera": {
-        "eye": [0, 0, 1000 ],
-        "look": [0, 0, 0 ]
-    }
-});
-
-// Subscribe to content module creation
-engine.modules.on("created", function (module) {
-    console.log("Module created: '" + module.id + "'");
-});
-
-// Subscribe to content module destruction
-myModule.on("destroyed", function () {
-    console.log("Module destroyed: '" + this.id + "'");
-});
-
-// Destroy the module
-myModule.destroy();
-
+        });
 
 
 </script>

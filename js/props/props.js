@@ -1,4 +1,5 @@
 Njn.Props = function (engine, cfg) {
+
     this._init();
 
     this.engine = engine;

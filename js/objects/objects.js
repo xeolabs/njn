@@ -36,17 +36,17 @@ Njn.Objects.prototype.create = function (params) {
     if (params.space) {
         var space = params.space;
         if (space == "world") {
-            node = this.engine.scene.world;
+            node = this.engine.nodes.world;
         } else if (space == "view") {
-            node = this.engine.scene.view;
+            node = this.engine.nodes.view;
         } else if (space == "sky") {
-            node = this.engine.scene.sky;
+            node = this.engine.nodes.sky;
         } else {
             Njn.log.error("Unsupported value for 'space': " + space);
-            node = this.engine.scene.world;
+            node = this.engine.nodes.world;
         }
     } else {
-        node = this.engine.scene.world;
+        node = this.engine.nodes.world;
     }
 
     //
@@ -54,16 +54,17 @@ Njn.Objects.prototype.create = function (params) {
     //
 
     // Create the object
-    var object = this._create(this, null, node, params);
+    var object = this._create(this.engine, null, node, params);
     this.roots[object.id] = object;
     return object;
 };
 
-Njn.Objects.prototype._create = function (objects, parent, node, params) {
+Njn.Objects.prototype._create = function (engine, parent, node, params) {
     var self = this;
-    var object = new Njn.Objects.Object(this, parent, node, params,
-        function (objects, parent, node, params) {
-            return self._create(objects, parent, node, params);
+    var object = new Njn.Objects.Object(
+        engine, parent, node, params,
+        function (engine, parent, node, params) {
+            return self._create(engine, parent, node, params);
         });
     this.objects[object.id] = object;
     object.on("destroyed", function () {
@@ -74,3 +75,9 @@ Njn.Objects.prototype._create = function (objects, parent, node, params) {
     this.set("created", object, true);
     return object;
 };
+
+Njn.Objects.prototype.getBoundary = function () {
+
+};
+
+

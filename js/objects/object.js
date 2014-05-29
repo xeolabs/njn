@@ -1,8 +1,8 @@
-Njn.Objects.Object = function (objects, parent, node, cfg, create) {
+Njn.Objects.Object = function (engine, parent, node, cfg, create) {
 
     this._init();
 
-    this.objects = objects;
+    this.engine = engine;
 
     this.parent = parent;
 
@@ -10,8 +10,8 @@ Njn.Objects.Object = function (objects, parent, node, cfg, create) {
 
     this._create = create;
 
-    var libs = objects.engine.libs;
-    var log = objects.engine.log;
+    var libs = engine.libs;
+    var log = engine.log;
 
     // Create nodes
 
@@ -29,7 +29,7 @@ Njn.Objects.Object = function (objects, parent, node, cfg, create) {
                 log.error("Appearance not found: '" + cfg, appearance + "'");
             }
         } else {
-            appearance = objects.libs.appearances.create(cfg.appearance);
+            appearance = engine.libs.appearances.create(cfg.appearance);
         }
         if (appearance) {
             if (appearance.material) {
@@ -101,7 +101,7 @@ Njn.Objects.Object = function (objects, parent, node, cfg, create) {
     if (cfg.objects) {
         var object;
         for (var i = 0, len = cfg.objects.length; i < len; i++) {
-            object = this._create(this.objects, this, this._leafNode, cfg.objects[i]);
+            object = this._create(engine, this, this._leafNode, cfg.objects[i]);
             this.objects[object.id] = object;
             object.on("destroyed", function () {
                 delete self.objects[object.id];
@@ -173,13 +173,83 @@ Njn.Objects.Object.prototype.getBoundary = function () {
     return this._boundary;
 };
 
+Njn.Objects.Object.prototype._rebuildBoundary = function () {
+
+    if (!this._boundaryDirty) {
+        return;
+    }
+    // Max inside-out boundary, ready to expand to fit geometry or sub-objects
+    this._boundary = {
+        xmin: Njn.math.MAX_DOUBLE,
+        ymin: Njn.math.MAX_DOUBLE,
+        zmin: Njn.math.MAX_DOUBLE,
+        xmax: Njn.math.MIN_DOUBLE,
+        ymax: Njn.math.MIN_DOUBLE,
+        zmax: Njn.math.MIN_DOUBLE
+    };
+
+    // Rebuild asset xforms
+    if (this._boundaryXFormDirty) {
+        if (this._boundedAssets) {
+            var matrix = this._transformNode.getWorldMatrix();
+            var boundary;
+            for (var i = 0, len = this._boundedAssets.length; i < len; i++) {
+                boundary = this._boundedAssets[i].boundary;
+                if (boundary) {
+                    //boundary.setMatrix(matrix);
+                }
+            }
+        }
+        this._boundaryXFormDirty = false;
+    }
+
+    // Expand boundary to enclose assets
+    if (this._boundedAssets) {
+        var asset;
+        for (var i = 0, len = this._boundedAssets.length; i < len; i++) {
+            asset = this._boundedAssets[i];
+            if (asset.boundary) {
+                this._expandBoundary(this._boundary, asset.boundary);
+            }
+        }
+    }
+
+    // Expand boundary to enclose sub-objects
+    var object;
+    for (var i = 0, len = this.objects.length; i < len; i++) {
+        object = this.objects[i];
+        if (object._boundaryDirty) {
+            object._rebuildBoundary();
+        }
+        this._expandBoundary(this._boundary, object._boundary);
+    }
+
+    // Find center of boundary
+    this._center = [
+        (this._boundary.xmax + this._boundary.xmin) * 0.5,
+        (this._boundary.ymax + this._boundary.ymin) * 0.5,
+        (this._boundary.zmax + this._boundary.zmin) * 0.5
+    ];
+
+    this._boundaryDirty = false;
+};
+
+Njn.Objects.Object.prototype._expandBoundary = function (a, b) {
+    if (a.xmin > b.xmin) a.xmin = b.xmin;
+    if (a.ymin > b.ymin) a.ymin = b.ymin;
+    if (a.zmin > b.zmin) a.zmin = b.zmin;
+    if (a.xmax < b.xmax) a.xmax = b.xmax;
+    if (a.ymax < b.ymax) a.ymax = b.ymax;
+    if (a.zmax < b.zmax) a.zmax = b.zmax;
+};
+
 
 /**
  *
  * @param cfg
  */
 Njn.Objects.Object.prototype.create = function (cfg) {
-    var object = this._create(this.objects, this._leafNode, cfg.objects[i]);
+    var object = this._create(this.engine, this._leafNode, cfg.objects[i]);
     this.objects.push(object);
     return object;
 };

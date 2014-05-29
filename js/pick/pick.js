@@ -15,10 +15,10 @@ Njn._extend(Njn.Pick, Njn.Component);
  * @returns {*} The pick hit info, if something is picked
  */
 Njn.Pick.prototype.pick = function (canvasX, canvasY, rayPick) {
-    var hit = this.engine.scene.pick({ canvasX: canvasX, canvasY: canvasY, rayPick: rayPick });
+    var hit = this.engine.nodes.scene.pick({ canvasX: canvasX, canvasY: canvasY, rayPick: rayPick });
     if (hit) {
         var objectId = hit.name;
-        var object = this.engine.scene.objects[objectId];
+        var object = this.engine.objects.objects[objectId];
         if (object) {
             var pickInfo = {
                 objectId: objectId,

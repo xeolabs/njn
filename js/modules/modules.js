@@ -1,4 +1,4 @@
-Njn.Modules = function (engine) {
+Njn.Modules = function (engine, cfg) {
     this._init();
     this.engine = engine;
     this.modules = {};
@@ -11,7 +11,7 @@ Njn._extend(Njn.Modules, Njn.Component);
  * @param moduleId
  * @param index
  */
-Njn.Modules.create = function (params) {
+Njn.Modules.prototype.create = function (params) {
 
     var module = new Njn.Modules.Module(this, params);
     var id = params.id;
@@ -22,8 +22,8 @@ Njn.Modules.create = function (params) {
 
     module.once("destroyed", function () {
         delete self.modules[id];
-        self._set("destroyed", module, true);
+        self.set("destroyed", module, true);
     });
 
-    this._set("created", module, true);
+    this.set("created", module, true);
 };

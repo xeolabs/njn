@@ -13,7 +13,7 @@ Njn.Libs = function (engine, cfg) {
     this.engine = engine;
 
     // Container node in scene graph for all libraries in this set
-    var node = engine.scene.library.addNode();
+    var node = engine.nodes.library.addNode();
 
     /**
      * Appearances library.

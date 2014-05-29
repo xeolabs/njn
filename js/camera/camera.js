@@ -12,7 +12,7 @@ Njn.Camera = function (engine, cfg) {
 
     this.engine = engine;
 
-    var lookat = engine.scene.lookat;
+    var lookat = engine.nodes.lookat;
 
     this.on("eye", function (eye) {
         lookat.setEye({x: eye[0], y: eye[1], z: eye[2] });

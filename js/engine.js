@@ -29,12 +29,12 @@ Njn.Engine = function (id, cfg) {
 
     /**
      * The core SceneJS scene graph.
-     * @type {Njn.Graphics}
+     * @type {Njn.Nodes}
      */
-    this.scene = new Njn.Scene(this, cfg);
+    this.nodes = new Njn.Nodes(this, cfg);
 
-    // Publish ticks
-    this.scene.on("tick", function(params) {
+    // Publish scene ticks
+    this.nodes.scene.on("tick", function(params) {
         self.set("tick", params);
     });
 
@@ -67,6 +67,12 @@ Njn.Engine = function (id, cfg) {
      * @type {Njn.Pick}
      */
     this.pick = new Njn.Pick(this);
+
+    /**
+     * Input handling subsystem.
+     * @type {Njn.Input}
+     */
+    this.input = new Njn.Input(this);
 };
 
 Njn._extend(Njn.Engine, Njn.Component);
