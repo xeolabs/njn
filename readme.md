@@ -54,7 +54,11 @@ engine.tasks.on("failed", function (task) {
 
 // Start and complete a task
 var task = engine.tasks.start({ description: "foo" });
-task.complete();
+task.setCompleted();
+
+// Start and fail a task
+var task2 = engine.tasks.start({ description: "bar" });
+task2.setFailed();
 ```
 
 ## Libraries
