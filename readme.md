@@ -1,18 +1,18 @@
 
-## Creating an engine
+### Creating an engine
 
 ```javascript
 var engine = Njn.createEngine({});
 ```
 
-## Logging
+### Logging
 
 ```javascript
 engine.log.info("All is well");
 engine.log.warn("Something looks dodgy");
 engine.log.error("All is lost!");
 ```
-## Property management
+### Properties
 
 Properties are any sort of configs you want the engine to manage for you
 ```javascript
