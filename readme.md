@@ -1,21 +1,25 @@
 
-### Creating an engine
+Njn is another experimental 3D engine I built on SceneJS.
+
+## Creating an engine
 
 ```javascript
 var engine = Njn.createEngine({});
 ```
 
-### Logging
+## Logging
 
 ```javascript
 engine.log.info("All is well");
 engine.log.warn("Something looks dodgy");
 engine.log.error("All is lost!");
 ```
-### Properties
+## Properties
 
-Properties are any sort of configs you want the engine to manage for you
-```javascript
+Properties are any sort of configs you want the engine to manage for you. Manage them all in one place with
+the ```properties``` component:
+
+````javascript
 //Subscribe to a property
 engine.props.on("foo", function (value) {
     console.log("Property 'foo' updated: " + value);
@@ -26,16 +30,13 @@ engine.props.set("foo", 42);
 
 // Get value of property we know already exists
 var propValue = engine.props.props["foo"];
-```
+````
 
+## Tasks
 
-//-----------------------------------------------------------------------
-// Task tracking
-// This is just for tracking asynchronous tasks via the engine.
-//-----------------------------------------------------------------------
+Tasks are any sort of process that happens in your engine. Track them all in one place with the ```tasks``` component:
 
-engine.log.info("----------------- Testing task tracking");
-
+```javascript
 // Subscribe to tasks starting
 engine.tasks.on("started", function (task) {
     console.log("Task started: '" + task.id + "'");
@@ -54,37 +55,13 @@ engine.tasks.on("failed", function (task) {
 // Start and complete a task
 var task = engine.tasks.start({ description: "foo" });
 task.complete();
+```
 
+## Libraries
 
-//-----------------------------------------------------------------------
-// Add a node directly to either the "library", "sky", "view" or
-// "world" branches of the engine's core SceneJS scene graph
-//-----------------------------------------------------------------------
-//engine.nodes.sky.addNodes([
-//    {
-//        "type": "objects/skyboxes/stormyNight"
-//    },
-//    {
-//        "type": "objects/grounds/grass"
-//    }
-//]);
-//
-//engine.nodes.view.addNodes([
-//    {
-//        "type": "hud/hud1"
-//    }
-//]);
+Reuse appearances and geometries by managing them in libraries:
 
-
-//-----------------------------------------------------------------------
-// Asset libraries
-// These are assets that we'll reference from our scene objects
-//-----------------------------------------------------------------------
-
-engine.log.info("----------------- Testing asset libs");
-
-engine.log.info("----------------- Creating an appearance asset");
-
+```javascript
 // Create an appearance asset
 engine.libs.appearances.create({
     "id": "red",
@@ -93,18 +70,6 @@ engine.libs.appearances.create({
         specularColor: { r: 1.0, g: 1.0, b: 1.0 }
     }
 });
-
-// Create an appearance asset
-engine.libs.appearances.create({
-    "id": "green",
-    material: {
-        color: {r: 0.3, g: 1.0, b: 0.3},
-        specularColor: { r: 1.0, g: 1.0, b: 1.0 },
-        emit: 0
-    }
-});
-
-engine.log.info("----------------- Creating a geometry asset");
 
 // Create a geometry asset
 engine.libs.geometries.create({
@@ -143,30 +108,11 @@ engine.libs.geometries.create({
         20, 21, 22, 20, 22, 23
     ]
 });
+```
 
+## Objects
 
-//-----------------------------------------------------------------------
-// Object graph
-// The engine has a tree of objects which represent the 3D scene
-//-----------------------------------------------------------------------
-
-engine.log.info("----------------- Testing object graph");
-
-engine.log.info("----------------- Subscribing to global object creation");
-
-// Subscribe to new objects
-engine.objects.on("created", function (object) {
-    console.log("Object created: '" + object.id + "'");
-});
-
-engine.log.info("----------------- Subscribing to global object destruction");
-
-// Subscribe to deleted objects
-engine.objects.on("destroyed", function (object) {
-    console.log("Object destroyed: '" + object.id + "'");
-});
-
-engine.log.info("----------------- Creating an object");
+```javascript
 
 // Create an object with a child
 var myObject = engine.objects.create({
@@ -223,6 +169,16 @@ var myObject = engine.objects.create({
     ]
 });
 
+// Subscribe to new objects
+engine.objects.on("created", function (object) {
+    console.log("Object created: '" + object.id + "'");
+});
+
+// Subscribe to deleted objects
+engine.objects.on("destroyed", function (object) {
+    console.log("Object destroyed: '" + object.id + "'");
+});
+
 // Subscribe to object's destruction
 myObject.on("destroyed", function () {
     console.log("Object destroyed: '" + this.id + "'");
@@ -261,12 +217,13 @@ var a = 0;
 engine.on("tick", function () {
     //engine.objects.objects["myChildObject"].setAngle(a += 1.0);
 });
-
+```
 
 //-----------------------------------------------------------------------
 // Camera
 //-----------------------------------------------------------------------
 
+```javascript
 // Subscribe to camera's eye position
 engine.camera.on("eye", function (eye) {
     console.log("Camera eye updated: [" + eye[0] + ", " + eye[1] + ", " + eye[2] + "]");
@@ -290,21 +247,23 @@ engine.camera.set("up", [0, 1, 0]);
 
 // Set camera point-of-interest
 engine.camera.set("look", [0, 0, 0]);
-
+```
 
 //-----------------------------------------------------------------------
 // Picking
 //-----------------------------------------------------------------------
 
+```javascript
 // Pick whatever object is at the given canvas coords
 // If picked, the object will publish the pick hit as shown above
 engine.pick.pick(100, 234, true); // Do a 3D ray-pick
-
+```
 
 //-----------------------------------------------------------------------
 // Content modules
 //-----------------------------------------------------------------------
 
+```javascript
 // Create a module of content.
 // This is essentially what we've done above, but as a module.
 // You can have multiple modules - often you would have one module defining asset libraries,
@@ -397,7 +356,7 @@ engine.pick.pick(100, 234, true); // Do a 3D ray-pick
 //// Destroy the module
 //myModule.destroy();
 
-
+```javascript
 var yaw = 0;
 
 engine.on("tick",
@@ -417,3 +376,4 @@ engine.on("tick",
                 engine.objects.objects["myChildObject"].setAngle(yaw);
             }
         });
+```
