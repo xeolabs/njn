@@ -4,7 +4,7 @@ Njn.Modules.Module = function (modules, cfg) {
 
     /**
      * Modules subsystem that contains this module
-     * @type {*}
+     * @type {Njn.Modules}
      */
     this.modules = modules;
 

@@ -15,9 +15,10 @@ var Njn = new (function () {
     this.createEngine = function (cfg) {
         idMap = idMap || new Njn.Map();
         cfg = cfg || {};
-        // Unique scene ID
+        // Unique engine ID
         var id = cfg.id;
         if (id) {
+            // No graceful recovery without engine to handle logging
             if (this.engines[id]) {
                 throw "An engine with this ID already exists: " + id;
             }

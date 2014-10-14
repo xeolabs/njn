@@ -15,6 +15,9 @@ Njn.Objects.Object = function (engine, parent, node, cfg, create) {
 
     // Create nodes
 
+    // Pick namespace
+    this._name = node = node.addNode({ type: "name", name: this.id });
+
     // Transforms, initialised later
     this._pos = node = node.addNode({ type: "translate" });
     this._rotate = node = node.addNode({ type: "rotate" });
@@ -55,6 +58,10 @@ Njn.Objects.Object = function (engine, parent, node, cfg, create) {
     }
 
     this._leafNode = node;
+
+    if (cfg.nodes) {
+        this._leafNode.addNodes(cfg.nodes);
+    }
 
     // Bind topics to nodes
 
@@ -151,7 +158,7 @@ Njn.Objects.Object.prototype.setScale = function (scale) {
  */
 Njn.Objects.Object.prototype.pick = function (pickInfo) {
     if (this.parent) {
-        parent.set("picked", pickInfo, true);
+        this.parent.set("picked", pickInfo, true);
     }
     this.set("picked", pickInfo, true);
 };

@@ -1,3 +1,9 @@
+/**
+ * An engine
+ * @param id
+ * @param cfg
+ * @constructor
+ */
 Njn.Engine = function (id, cfg) {
 
     cfg = cfg || {};
@@ -6,29 +12,36 @@ Njn.Engine = function (id, cfg) {
 
     this._init();
 
+    /** Engine's unique ID
+     *  @type {string}
+     */
     this.id = id;
+
+    /** True once destroyed
+     * @type {boolean}
+     */
     this.destroyed = false;
 
     /**
-     * Logging.
+     * Logging for this engine
      * @type {Njn.Objects}
      */
     this.log = new Njn.Log(this);
 
     /**
-     * Configuration.
+     * Configs for this engine
      * @type {Njn.Props}
      */
     this.props = new Njn.Props(this, cfg);
 
     /**
-     * Asynch task tracking.
+     * Asynch task tracking for this engine
      * @type {Njn.Tasks}
      */
     this.tasks = new Njn.Tasks(this);
 
     /**
-     * The core SceneJS scene graph.
+     * The SceneJS scene graph for this engine
      * @type {Njn.Nodes}
      */
     this.nodes = new Njn.Nodes(this, cfg);
@@ -39,37 +52,37 @@ Njn.Engine = function (id, cfg) {
     });
 
     /**
-     * Asset libraries.
+     * Asset libraries for this engine
      * @type {Njn.Libs}
      */
     this.libs = new Njn.Libs(this, cfg.libs);
 
     /**
-     * The 3D scene.
+     * The 3D scene for this engine
      * @type {Njn.Objects}
      */
     this.objects = new Njn.Objects(this, cfg.objects);
 
     /**
-     * The camera.
+     * The camera for this engine
      * @type {Njn.Camera}
      */
     this.camera = new Njn.Camera(this, cfg.camera);
 
     /**
-     * Modules
+     * Modules in this engine
      * @type {Njn.Modules}
      */
     this.modules = new Njn.Modules(this, cfg.modules);
 
     /**
-     * Picking subsystem.
+     * Picking subsystem for this engine
      * @type {Njn.Pick}
      */
     this.pick = new Njn.Pick(this);
 
     /**
-     * Input handling subsystem.
+     * Input handling subsystem for this engine
      * @type {Njn.Input}
      */
     this.input = new Njn.Input(this);

@@ -153,7 +153,7 @@ Njn.Nodes = function (engine, cfg) {
                             },
                             {
                                 "id": "__lights",
-                                "type": "lights",
+//                                "type": "lights",
                                 "lights": cfg.lights || [
                                     {
                                         mode: "ambient",
@@ -173,7 +173,8 @@ Njn.Nodes = function (engine, cfg) {
                                         color: [1.0, 1.0, 1.0 ],
                                         diffuse: true,
                                         specular: true,
-                                        dir: [-1.0, 0.0, 0.0 ]
+                                        dir: [-1.0, 0.0, 0.0 ],
+                                        space: "world"
                                     }
                                 ],
                                 "nodes": [

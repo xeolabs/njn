@@ -79,6 +79,8 @@ engine.log.error("All is lost!");
 // Properties are any sort of configs you want the engine to manage for you
 //-----------------------------------------------------------------------
 
+engine.log.info("----------------- Testing property management");
+
 // Subscribe to a property
 engine.props.on("foo", function (value) {
     console.log("Property 'foo' updated: " + value);
@@ -95,6 +97,8 @@ var propValue = engine.props.props["foo"];
 // Task tracking
 // This is just for tracking asynchronous tasks via the engine.
 //-----------------------------------------------------------------------
+
+engine.log.info("----------------- Testing task tracking");
 
 // Subscribe to tasks starting
 engine.tasks.on("started", function (task) {
@@ -141,13 +145,30 @@ task.complete();
 // These are assets that we'll reference from our scene objects
 //-----------------------------------------------------------------------
 
+engine.log.info("----------------- Testing asset libs");
+
+engine.log.info("----------------- Creating an appearance asset");
+
 // Create an appearance asset
 engine.libs.appearances.create({
     "id": "red",
     material: {
-        color: [1, 0, 0]
+        color: {r: 1, g: 0.3, b: 0.3},
+        specularColor: { r: 1.0, g: 1.0, b: 1.0 }
     }
 });
+
+// Create an appearance asset
+engine.libs.appearances.create({
+    "id": "green",
+    material: {
+        color: {r: 0.3, g: 1.0, b: 0.3},
+        specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+        emit: 0
+    }
+});
+
+engine.log.info("----------------- Creating a geometry asset");
 
 // Create a geometry asset
 engine.libs.geometries.create({
@@ -193,28 +214,75 @@ engine.libs.geometries.create({
 // The engine has a tree of objects which represent the 3D scene
 //-----------------------------------------------------------------------
 
+engine.log.info("----------------- Testing object graph");
+
+engine.log.info("----------------- Subscribing to global object creation");
+
 // Subscribe to new objects
 engine.objects.on("created", function (object) {
     console.log("Object created: '" + object.id + "'");
 });
+
+engine.log.info("----------------- Subscribing to global object destruction");
 
 // Subscribe to deleted objects
 engine.objects.on("destroyed", function (object) {
     console.log("Object destroyed: '" + object.id + "'");
 });
 
+engine.log.info("----------------- Creating an object");
+
 // Create an object with a child
 var myObject = engine.objects.create({
-    "id": "myColor",
-    "appearance": "red",
+    "id": "myParentObject",
+    "appearance": "red", // Use appearance added to library earlier
     "objects": [
         {
-            "id": "myBox",
+            "id": "myChildObject",
+            axis: [1, 1, 0],
+            angle: 0,
+            scale: [2, 2, 2],
+            pos: [0, 0, 0],
+            "geometry": "box" // Use geometry added to library earlier
+        },
+        {
+            "id": "myChildObject2",
             axis: [1, 1, 0],
             angle: 0,
             scale: [2, 2, 2],
             pos: [10, 0, 0],
-            "geometry": "box"
+            "appearance": "green", // Use appearance added to library earlier
+            "geometry": "box" // Use geometry added to library earlier
+        },
+        {
+            nodes: [
+                {
+                    type: "translate",
+                    x: -15,
+                    nodes: [
+                        {
+                            type: "models/vehicles/tank"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+});
+
+// Create an object containing SceneJS nodes
+var myObject = engine.objects.create({
+    "id": "myOtherObject",
+    pos: [0, 0, 20],
+    nodes: [
+        {
+            type: "translate",
+            x: 25,
+            nodes: [
+                {
+                    type: "models/vehicles/tank"
+                }
+            ]
         }
     ]
 });
@@ -245,8 +313,8 @@ myObject.on("scale", function (scale) {
 });
 
 // Subscribe to pick hits on the object
-myObject.on("pick", function (hit) {
-    console.log("Object picked: " + JSON.stringify(hit));
+myObject.on("picked", function (hit) {
+    alert("Object picked: " + JSON.stringify(hit));
 });
 
 // Destroy the object
@@ -255,7 +323,7 @@ myObject.on("pick", function (hit) {
 // Rotate the object on each engine tick
 var a = 0;
 engine.on("tick", function () {
-    //engine.objects.objects["myBox"].setAngle(a += 1.0);
+    //engine.objects.objects["myChildObject"].setAngle(a += 1.0);
 });
 
 
@@ -279,7 +347,7 @@ engine.camera.on("up", function (up) {
 });
 
 // Set camera eye
-engine.camera.set("eye", [0, 0, 100]);
+engine.camera.set("eye", [30, 50, 80]);
 
 // Set camera up vector
 engine.camera.set("up", [0, 1, 0]);
@@ -359,11 +427,11 @@ engine.pick.pick(100, 234, true); // Do a 3D ray-pick
 //
 //    "objects": [
 //        {
-//            "id": "myColor",
+//            "id": "myParentObject",
 //            "appearance": "red",
 //            "objects": [
 //                {
-//                    "id": "myBox",
+//                    "id": "myChildObject",
 //                    axis: [1, 1, 0],
 //                    angle: 0,
 //                    scale: [2, 2, 2],
@@ -410,7 +478,7 @@ engine.on("tick",
                     yaw -= 0.3;
                 }
 
-                engine.objects.objects["myBox"].setAngle(yaw);
+                engine.objects.objects["myChildObject"].setAngle(yaw);
             }
         });
 

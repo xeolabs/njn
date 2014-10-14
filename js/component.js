@@ -1,5 +1,5 @@
 /**
- * @class Base class for Human components.
+ * @class Base class for engine components.
  * <p>Provides methods for listening to data changes on components: {@link #on} is used to listen for
  * data changes at a particular location, while {@link #off} is used to stop receiving updates.</p>
  * @constructor
